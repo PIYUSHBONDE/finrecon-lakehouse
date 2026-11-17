@@ -1,0 +1,21 @@
+version: 1
+source: fx
+rules:
+  - name: INVALID_CSV
+    expression: _corrupt_record IS NULL
+  - name: INVALID_RATE_DATE
+    expression: rate_date IS NOT NULL AND rate_date_text RLIKE '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+  - name: INVALID_CURRENCY
+    expression: currency IN ('USD','EUR','GBP','JPY','INR')
+  - name: INVALID_REPORTING_CURRENCY
+    expression: reporting_currency = 'INR'
+  - name: INVALID_RATE_FORMAT
+    expression: rate_text RLIKE '^[0-9]+([.][0-9]{1,4})?$'
+  - name: INVALID_RATE_VALUE
+    expression: fx_rate_dec IS NOT NULL AND fx_rate_dec > 0
+  - name: INVALID_SELF_RATE
+    expression: currency != reporting_currency OR fx_rate_dec = CAST(1 AS DECIMAL(18,4))
+  - name: MISSING_RATE_ID
+    expression: rate_id IS NOT NULL AND length(rate_id) > 0
+  - name: MISSING_PROVENANCE
+    expression: provenance IS NOT NULL AND length(provenance) > 0

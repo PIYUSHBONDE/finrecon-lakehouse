@@ -1,0 +1,21 @@
+version: 1
+source: bank
+rules:
+  - name: INVALID_JSON
+    expression: json_valid
+  - name: MISSING_SETTLEMENT_ID
+    expression: entity_key IS NOT NULL AND length(entity_key) > 0
+  - name: MISSING_MERCHANT
+    expression: merchant_id IS NOT NULL AND length(merchant_id) > 0
+  - name: INVALID_CURRENCY
+    expression: currency IN ('USD', 'EUR', 'GBP', 'JPY', 'INR')
+  - name: INVALID_AMOUNT_FORMAT
+    expression: _amount_text RLIKE '^[0-9]+([.][0-9]{1,4})?$'
+  - name: INVALID_AMOUNT_VALUE
+    expression: settled_amount_dec IS NOT NULL AND settled_amount_dec > 0
+  - name: INVALID_BATCH_DATE
+    expression: batch_date IS NOT NULL AND batch_date_text RLIKE '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+  - name: MISSING_MATCH_REFERENCE
+    expression: length(gateway_ref) > 0 OR length(remittance_memo) > 0
+  - name: OUTSIDE_RECONCILIATION_WINDOW
+    expression: event_date >= window_start AND event_date <= date_add(as_of_date, 1)

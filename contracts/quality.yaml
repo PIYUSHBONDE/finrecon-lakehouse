@@ -1,0 +1,33 @@
+version: 1
+silver:
+  - name: gateway_unique_key
+    sql: SELECT count(*) AS violations FROM (SELECT entity_key FROM silver_gateway_events GROUP BY entity_key HAVING count(*) > 1 OR entity_key IS NULL)
+  - name: bank_unique_key
+    sql: SELECT count(*) AS violations FROM (SELECT entity_key FROM silver_bank_settlements GROUP BY entity_key HAVING count(*) > 1 OR entity_key IS NULL)
+  - name: journal_unique_key
+    sql: SELECT count(*) AS violations FROM (SELECT entity_key FROM silver_ledger_entries GROUP BY entity_key HAVING count(*) > 1 OR entity_key IS NULL)
+  - name: valid_gateway_money
+    sql: SELECT count(*) AS violations FROM silver_gateway_events WHERE amount_dec IS NULL OR amount_dec <= 0 OR currency NOT IN ('USD','EUR','GBP','JPY','INR') OR currency IS NULL
+  - name: valid_bank_money
+    sql: SELECT count(*) AS violations FROM silver_bank_settlements WHERE settled_amount_dec IS NULL OR settled_amount_dec <= 0 OR currency NOT IN ('USD','EUR','GBP','JPY','INR') OR currency IS NULL
+gold:
+  - name: unique_decisions
+    sql: SELECT count(*) AS violations FROM (SELECT item_id FROM gold_reconciliation GROUP BY item_id HAVING count(*) > 1 OR item_id IS NULL)
+  - name: matched_financial_invariants
+    sql: >-
+      SELECT count(*) AS violations FROM gold_reconciliation WHERE status = 'MATCHED' AND NOT coalesce(
+      item_type = 'INVOICE' AND size(reasons) = 0 AND gateway_count = 1 AND bank_count = 1 AND journal_count >= 2
+      AND amount_dec > 0 AND amount_dec = gateway_amount_dec AND amount_dec = bank_amount_dec
+      AND amount_dec = ledger_debit_dec AND ledger_debit_dec = ledger_credit_dec, false)
+  - name: decision_status
+    sql: SELECT count(*) AS violations FROM gold_reconciliation WHERE status IS NULL OR status NOT IN ('MATCHED','OPEN') OR reasons IS NULL OR (status = 'OPEN' AND size(reasons) = 0)
+  - name: unique_matched_settlement
+    sql: SELECT count(*) AS violations FROM (SELECT settlement_id FROM gold_reconciliation WHERE status = 'MATCHED' GROUP BY settlement_id HAVING count(*) > 1 OR settlement_id IS NULL)
+  - name: open_items_exactly_match_decisions
+    sql: >-
+      SELECT count(*) AS violations FROM
+      (SELECT item_id, content_hash FROM gold_reconciliation WHERE status = 'OPEN') r
+      FULL OUTER JOIN state_unreconciled_open_items o ON r.item_id = o.item_id
+      WHERE r.item_id IS NULL OR o.item_id IS NULL OR NOT (r.content_hash <=> o.content_hash) OR o.status != 'OPEN'
+  - name: unique_open_items
+    sql: SELECT count(*) AS violations FROM (SELECT item_id FROM state_unreconciled_open_items GROUP BY item_id HAVING count(*) > 1 OR item_id IS NULL)

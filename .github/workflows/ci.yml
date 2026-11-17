@@ -1,0 +1,47 @@
+name: Local CI
+
+'on':
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Local validation profile
+        type: choice
+        options: [fast, full]
+        default: fast
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: finrecon-local-ci-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: [self-hosted, windows, x64, finrecon]
+    timeout-minutes: 75
+    defaults:
+      run:
+        shell: powershell
+    env:
+      CI_PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'fast' }}
+    steps:
+      - name: Check out trusted repository code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, verified 2026-11-13
+        with:
+          persist-credentials: false
+          clean: false
+      - name: Prepare pinned local tools
+        run: |
+          python -c "import sys; assert sys.version_info[:2] == (3, 11), 'Python 3.11 required'"
+          if ($LASTEXITCODE -ne 0) { throw 'Python preflight failed.' }
+          python -m venv .venv-ci
+          if ($LASTEXITCODE -ne 0) { throw 'CI environment creation failed.' }
+          .venv-ci/Scripts/python.exe -m pip install -r requirements-dev.txt
+          if ($LASTEXITCODE -ne 0) { throw 'CI dependency installation failed.' }
+      - name: Validate locally
+        run: |
+          ./scripts/ci_checks.ps1 -Profile $env:CI_PROFILE -Python .venv-ci/Scripts/python.exe

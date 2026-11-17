@@ -1,0 +1,23 @@
+version: 1
+source: cdc
+rules:
+  - name: UNSUPPORTED_CDC_TABLE
+    expression: cdc_table IN ('accounts', 'invoices', 'ledger_entries')
+  - name: INVALID_CDC_OPERATION
+    expression: is_tombstone OR op IN ('r', 'c', 'u', 'd')
+  - name: INVALID_CDC_SOURCE
+    expression: is_tombstone OR (source_db = 'finrecon' AND source_schema = 'public' AND source_connector = 'postgresql' AND cdc_table = topic_table)
+  - name: MISSING_CDC_KEY
+    expression: is_tombstone OR (entity_key IS NOT NULL AND length(entity_key) > 0)
+  - name: CDC_KEY_MISMATCH
+    expression: is_tombstone OR message_entity_key IS NULL OR entity_key = message_entity_key
+  - name: INVALID_CDC_ORDER
+    expression: is_tombstone OR (lsn_text RLIKE '^[0-9]+$' AND source_lsn >= 0 AND source_lsn <= CAST('18446744073709551615' AS DECIMAL(20,0)) AND source_order >= 0 AND source_ts_ms >= 0 AND (_tx_order IS NULL OR (_tx_order RLIKE '^[0-9]+$' AND try_cast(_tx_order AS BIGINT) >= 0)))
+  - name: INVALID_CDC_PROVENANCE
+    expression: length(topic) > 0 AND partition >= 0 AND offset >= 0
+  - name: INVALID_ACCOUNT
+    expression: is_tombstone OR op = 'd' OR cdc_table != 'accounts' OR (account_id = entity_key AND length(merchant_id) > 0 AND length(account_name) > 0 AND length(tier) > 0 AND active_text IN ('true', 'false'))
+  - name: INVALID_INVOICE
+    expression: is_tombstone OR op = 'd' OR cdc_table != 'invoices' OR (invoice_id = entity_key AND length(account_id) > 0 AND total_amount_text RLIKE '^[0-9]+([.][0-9]{1,4})?$' AND total_amount_dec >= 0 AND currency IN ('USD', 'EUR', 'GBP', 'JPY', 'INR') AND status IN ('ISSUED', 'PAID', 'CANCELLED'))
+  - name: INVALID_JOURNAL
+    expression: is_tombstone OR op = 'd' OR cdc_table != 'ledger_entries' OR (entry_id = entity_key AND length(invoice_id) > 0 AND length(account_id) > 0 AND debit_text RLIKE '^[0-9]+([.][0-9]{1,4})?$' AND credit_text RLIKE '^[0-9]+([.][0-9]{1,4})?$' AND debit_dec >= 0 AND credit_dec >= 0 AND NOT (debit_dec > 0 AND credit_dec > 0) AND entry_ts IS NOT NULL)

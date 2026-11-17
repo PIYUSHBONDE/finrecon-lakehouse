@@ -1,0 +1,7 @@
+.git
+.venv
+.venv-ci
+.ruff_cache
+**/__pycache__
+data_generator/output
+pipelines/output

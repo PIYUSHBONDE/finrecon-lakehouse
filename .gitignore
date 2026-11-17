@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.venv/
+.venv-ci/
+.ruff_cache/
+data_generator/output/
+pipelines/output/

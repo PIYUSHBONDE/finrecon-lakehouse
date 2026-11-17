@@ -1,0 +1,23 @@
+version: 1
+source: gateway
+rules:
+  - name: INVALID_JSON
+    expression: json_valid
+  - name: MISSING_EVENT_ID
+    expression: event_id IS NOT NULL AND length(event_id) > 0
+  - name: MISSING_IDEMPOTENCY_KEY
+    expression: entity_key IS NOT NULL AND length(entity_key) > 0
+  - name: MISSING_INVOICE_ID
+    expression: invoice_id IS NOT NULL AND length(invoice_id) > 0
+  - name: MISSING_MERCHANT
+    expression: merchant_id IS NOT NULL AND length(merchant_id) > 0
+  - name: INVALID_CURRENCY
+    expression: currency IN ('USD', 'EUR', 'GBP', 'JPY', 'INR')
+  - name: INVALID_AMOUNT_FORMAT
+    expression: _amount_text RLIKE '^[0-9]+([.][0-9]{1,4})?$'
+  - name: INVALID_AMOUNT_VALUE
+    expression: amount_dec IS NOT NULL AND amount_dec > 0
+  - name: INVALID_EVENT_TIMESTAMP
+    expression: event_ts IS NOT NULL AND event_ts_text RLIKE '(Z|[+-][0-9]{2}:[0-9]{2})$'
+  - name: OUTSIDE_RECONCILIATION_WINDOW
+    expression: event_date >= window_start AND event_date <= date_add(as_of_date, 1)

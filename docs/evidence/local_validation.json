@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "record_type": "historical_local_validation",
+  "measured_date": "2026-11-14",
+  "prepared_at": "2026-11-15T09:53:26.597095+00:00",
+  "scope": "Single-host local synthetic portfolio validation; not production certification.",
+  "end_to_end": {
+    "passed": true,
+    "payments": 1000,
+    "matched_payments": 1000,
+    "gateway_deliveries": 1050,
+    "exact_retries": 50,
+    "correlated_cdc_events": 4000,
+    "balanced_journal_legs": 2000,
+    "hot_originals": 650,
+    "poison_pills": 10,
+    "correction_policy": "Explicit synthetic fixture truth; no automatic financial repair",
+    "validated_memo_links": 20,
+    "historical_open_items_retained": 311,
+    "quality_checks": 35,
+    "pipeline_stages": 8,
+    "fresh_process_checks": {
+      "bronze_fresh_process": true,
+      "silver_fresh_process": true,
+      "cdc_fresh_process": true,
+      "gold_fresh_process": true,
+      "exceptions_fresh_process": true,
+      "fx_fresh_process": true,
+      "all_fixture_payments_matched": true,
+      "no_fixture_open_invoices": true,
+      "decimal_oracle": true
+    },
+    "retry_clock": "virtual; PostgreSQL and Kafka transport real"
+  },
+  "ci": {
+    "passed": true,
+    "fast_tests": 45,
+    "compute_tests": 19,
+    "total_tests": 64,
+    "unexpected_skips": 0,
+    "compute_suites": 9,
+    "source_mount_read_only": true,
+    "isolated_volumes_verified": true,
+    "opt_in_postgres_tests_outside_ci": 3,
+    "github_workflow": "prepared_not_activated"
+  },
+  "recovery": {
+    "passed": true,
+    "restored_old_rows": 0,
+    "new_cdc_rows": 6,
+    "probe_absent_from_original": true,
+    "isolation": "private internal Docker network, no published service ports",
+    "scope": "Physical snapshots and resumed CDC/Bronze; single host"
+  },
+  "retention_loss": {
+    "passed": true,
+    "expected_spark_exit": 1,
+    "committed_delta_unchanged": true,
+    "target": "New disposable probe topic only"
+  },
+  "fx": {
+    "synthetic_rates_only": true,
+    "independent_decimal_oracle_passed": true,
+    "cross_currency_settlement": false
+  },
+  "skew": {
+    "measured_date": "2026-11-13",
+    "synthetic_only": true,
+    "synthetic_payments": 1000000,
+    "balanced_journal_legs": 2000000,
+    "trials_per_strategy": 3,
+    "measured_actions": 36,
+    "scope": "Join plus currency aggregation/checksum action; source preparation and Python assertions excluded",
+    "results": "pipelines/BENCHMARK_RESULTS.md"
+  },
+  "boundaries": [
+    "Single host and single broker",
+    "End-to-end fixture is 1,000 payments; million-row evidence is isolated synthetic compute",
+    "Retry delay verification uses a virtual clock",
+    "Memo parser is deterministic, not an LLM",
+    "FX demonstration quotes are synthetic",
+    "Databricks/Airflow/Soda integrations unvalidated or unimplemented",
+    "Hot watermark deduplication not implemented; seven-day durable MERGE is active",
+    "No GitHub publication or hosted CI execution claimed"
+  ],
+  "proof_sources": {
+    "readiness": {
+      "path": "pipelines/output/readiness_20261114/readiness.json",
+      "sha256": "467d0a4e05988ff42e38cdb333399950d6deb64aa22e8609be9276eee27c92aa"
+    },
+    "ci": {
+      "path": "pipelines/output/ci/20261114T052812Z_343c7af3/verification.json",
+      "sha256": "a06204d96b35e37d93097bc208c4e4604552ca264751ef330487fbc3486a238c"
+    },
+    "coordinated_restore": {
+      "path": "pipelines/output/recovery/stack_20261114_retry/stack_recovery.json",
+      "sha256": "711871f22454f2fdb4d3ce1634c50e6dd8db636c75403f121711fd57afa82406"
+    },
+    "retention_loss": {
+      "path": "pipelines/output/retention_9ca6c8e9cd40/retention_verification.json",
+      "sha256": "9e3d48f2aec7eb7cfbdcb5af4efb8dd425c3fd7fcf1623ead0b04ddd84310100"
+    },
+    "memo_validation": {
+      "path": "pipelines/output/readiness_20261114/exception_verification.json",
+      "sha256": "a4ed3cc3ced526e15655b8d25d81fcdecb092ac1a04b0c48aa3ceee3461d02fe"
+    },
+    "fx": {
+      "path": "pipelines/output/readiness_20261114/fx_verification.json",
+      "sha256": "3b5fec2936dbe630cebdd342252816fdba669e15d97b2b99e5ce6c3b2762da34"
+    },
+    "orchestration": {
+      "path": "pipelines/output/readiness_20261114/runs/20261114T050443Z_e4511c99/run.json",
+      "sha256": "ebad27d3980e0fb7243a04945c7a72376309a8f6c32ac93eb632867e47c1f7b4"
+    },
+    "synthetic_skew": {
+      "path": "pipelines/output/benchmarks/20261113T070436Z_ceffe63a/benchmark.json",
+      "sha256": "554fd7c3e2469b102983ad42037ddca91836895dba9a650bd924c97d8e97f623"
+    },
+    "correlated_sources": {
+      "path": "data_generator/output/correlated_5326129a/live/verification.json",
+      "sha256": "971aa63f5ab753e01eb233bfc173110e7990fa415ce3dc8bb8ef10373d30589a"
+    },
+    "silver_quality": {
+      "path": "pipelines/output/readiness_20261114/runs/20261114T050443Z_e4511c99/silver_quality.json",
+      "sha256": "f4e5459e8bde1a5ae80177d907093d82cc5b0edeec8d76630a92d172dcaf640a"
+    },
+    "gold_quality": {
+      "path": "pipelines/output/readiness_20261114/runs/20261114T050443Z_e4511c99/gold_quality.json",
+      "sha256": "55f45452da9690cef5f5f92195ddeaebd5b4c8221eb620e8b9c7cac56eaf4819"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+services:
+  spark-tests:
+    build:
+      context: ..
+      dockerfile: docker/spark/Dockerfile
+    image: finrecon-spark:3.5.7-delta3.3.2
+    working_dir: /workspace
+    cpus: 2
+    mem_limit: 3g
+    environment:
+      PYSPARK_PYTHON: python3
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONWARNINGS: ignore::ResourceWarning
+      SPARK_LOCAL_IP: 127.0.0.1
+      SPARK_IVY_DIR: /opt/spark-ivy
+    volumes:
+      - type: bind
+        source: ..
+        target: /workspace
+        read_only: true
+      - type: bind
+        source: ${FINRECON_CI_REPORT_DIR:?Set FINRECON_CI_REPORT_DIR to an existing isolated report directory}
+        target: /reports
+      - ci_lakehouse:/lakehouse
+      - ci_ivy:/opt/spark-ivy
+    command: [python3, -m, pipelines.ci, --profile, spark, --report-dir, /reports/spark]
+
+volumes:
+  ci_lakehouse:
+  ci_ivy:
