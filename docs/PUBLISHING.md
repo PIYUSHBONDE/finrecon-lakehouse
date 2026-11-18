@@ -1,5 +1,10 @@
 # GitHub publication handover
 
+Repository: [PIYUSHBONDE/finrecon-lakehouse](https://github.com/PIYUSHBONDE/finrecon-lakehouse).
+The reviewed 94-file snapshot was published on November 17, 2026 as commit
+[`40bae34`](https://github.com/PIYUSHBONDE/finrecon-lakehouse/commit/40bae34c468781c85f2180097b9646537b9fb01b).
+See [CI.md](../pipelines/CI.md) for current runner operation and observed CI results.
+
 Suggested repository name: `finrecon-lakehouse`.
 
 Suggested description: "Local Spark/Delta payment reconciliation with PostgreSQL
@@ -13,8 +18,9 @@ Suggested topics: `data-engineering`, `pyspark`, `delta-lake`, `apache-kafka`,
 Publication preparation creates a separate Git repository under
 `pipelines/output/portfolio/`. It stages a curated source snapshot and the public
 aggregate evidence. The active workspace, Docker volumes, and existing release
-archive remain separate. The snapshot has no remote and no commits. No author
-identity or license is invented, and no account/repository is created remotely.
+archive remain separate. The November 15 preparation initially had no remote or
+commits. Publication later connected the owner-supplied repository and created
+one real initial commit. No historical development commits were manufactured.
 
 The adjacent `review.json` records the exact snapshot path, staged file count,
 content hashes, and checks. Open that report to find the prepared repository.
@@ -35,24 +41,24 @@ release archives, and the active workspace's Git metadata. Local demonstration
 credentials in the Compose/connector examples are intentionally visible; this
 is not production credential configuration.
 
-No project license has been selected. Decide the publication license, account,
-and visibility before publishing. The staged README describes the local edition
-and distinguishes unimplemented managed/model integrations.
+No project license file has been added. License selection remains the owner's
+decision. The supplied repository is public. The README describes the local
+edition and distinguishes unimplemented managed/model integrations.
 
 ## Commit and publish after review
 
-Configure your actual Git author identity if it is not already configured. The
-following commands are a manual handover; preparation does not execute them:
+Configure your actual Git author identity if it is not already configured. These
+commands describe future reviewed changes; initial publication has completed:
 
 ```powershell
 git commit -m "feat: add verified local reconciliation lakehouse"
 ```
 
-Create the intended empty repository in your chosen GitHub account. Use its
-actual URL rather than the placeholder below, then publish the reviewed commit:
+For another newly prepared checkout, add its intended URL only if no remote
+exists. The maintained publication checkout already has `origin`:
 
 ```powershell
-$repositoryUrl = 'https://github.com/YOUR_GITHUB_OWNER/finrecon-lakehouse.git'
+$repositoryUrl = 'https://github.com/PIYUSHBONDE/finrecon-lakehouse.git'
 git remote add origin $repositoryUrl
 git push -u origin main
 ```

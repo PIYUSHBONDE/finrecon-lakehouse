@@ -40,7 +40,7 @@ excluded from the publication snapshot.
 On the prepared development machine, check current services separately:
 
 ```powershell
-.venv-ci/Scripts/python.exe -m operations.status --dataset readiness_20261114
+.venv-ci/Scripts/python.exe -m operations.status --dataset readiness_20261118
 ```
 
 A live health failure or proof older than 72 hours must be shown as a failure.
@@ -58,7 +58,7 @@ preloaded Docker data; the recorded-summary command still works there.
 | Why no watermark deduplication yet? | Dropping late first arrivals would lose legitimate payments without a catch-up path. |
 | Why use WAL order? | Source causality survives timestamp ties and processing delays. |
 | Is the whole lakehouse one transaction? | No. Each table merge is atomic; serialized publication and replay handle partial progress. |
-| Why are 311 open items still present? | Shared CDC includes historical invoices outside this 1,000-payment gateway/bank cohort. |
+| Why are historical open items still present? | Shared CDC includes invoices outside the current 1,000-payment gateway/bank cohort. Their count can grow across fixtures; it is separate from that cohort's match rate. |
 | Is the parser an LLM? | No. It extracts complete UUID tokens deterministically; ambiguous/unsupported memos remain open. |
 | Did salting make the pipeline faster? | It spread the synthetic hot-key workload, but its observed median was slower than AQE. |
 | Does one million mean pipeline capacity? | No. That is isolated synthetic compute; the end-to-end correctness fixture is 1,000 payments. |

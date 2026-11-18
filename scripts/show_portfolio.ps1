@@ -32,4 +32,5 @@ Write-Output "Retention loss: expected Spark exit $($evidence.retention_loss.exp
 Write-Output "Scale boundary: $($evidence.skew.synthetic_payments) synthetic compute payments; end-to-end correctness fixture remains $($evidence.end_to_end.payments)"
 Write-Output "Retry timing: $($evidence.end_to_end.retry_clock)"
 Write-Output "Limits: $($evidence.boundaries -join '; ')"
-Write-Output 'For live services: .venv-ci/Scripts/python.exe -m operations.status --dataset readiness_20261114'
+$dataset = if ($evidence.dataset) { $evidence.dataset } else { 'readiness_20261114' }
+Write-Output "For live services: .venv-ci/Scripts/python.exe -m operations.status --dataset $dataset"

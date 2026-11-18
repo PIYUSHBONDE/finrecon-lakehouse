@@ -120,7 +120,7 @@ They compare shuffle joins, AQE, salting, and invoice-key reconciliation control
 
 Run [local CI](pipelines/CI.md) for repeatable lint, contract, unit, and isolated
 Spark checks. The GitHub workflow is prepared for a dedicated local runner;
-it has not been activated on GitHub. See the [completion checklist](PROJECT_STATUS.md)
+the first GitHub fast workflow passed on that Windows runner. See the [completion checklist](PROJECT_STATUS.md)
 for implemented behavior and remaining work.
 
 ## Honest evidence boundaries

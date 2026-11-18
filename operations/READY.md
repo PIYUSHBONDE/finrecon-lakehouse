@@ -9,7 +9,7 @@ Start Docker Desktop, then run these commands from the repository root:
 
 ```powershell
 docker compose -f docker/docker-compose.yml up -d postgres kafka debezium
-.venv-ci/Scripts/python.exe -m operations.status --dataset readiness_20261114
+.venv-ci/Scripts/python.exe -m operations.status --dataset readiness_20261118
 ```
 
 The status command reads live PostgreSQL/Kafka/connector health, verifies actual
@@ -83,6 +83,12 @@ It does not clear the demo dataset or launch PostgreSQL/Kafka. See
 [CI details](../pipelines/CI.md) and [recovery instructions](RECOVERY.md).
 Completed reports are local ignored artifacts; the repository contains the code
 needed to reproduce them. Keep backups separately before cleaning Docker storage.
+
+GitHub CI now uses the dedicated Windows runner on this PC. Keep Docker Desktop
+running and, after restarting or logging into Windows, start the registered
+listener with `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_ci_runner.ps1`.
+See [runner operation](../pipelines/CI.md); it uses its own checkout, not this
+development workspace. Run full CI and direct readiness verification sequentially.
 
 Test retention loss separately after normal readiness finishes:
 

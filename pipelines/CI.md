@@ -76,12 +76,12 @@ with zero compute tests when Maven connections were refused. Java and Python
 access were verified on 2026-11-14 before rerunning. No production cache was
 mounted or copied to bypass isolation, and no financial code was changed.
 
-## GitHub activation is separate
+## GitHub runner operation
 
-`.github/workflows/ci.yml` is prepared but has not been run on GitHub. This
-workspace currently has no Git repository metadata or remote. No Actions runner
-was installed or registered as part of this work. Nothing was published during
-local validation.
+The repository was published on November 17, 2026. On November 18, the dedicated
+Windows x64 runner `finrecon-piyush-windows` was registered for
+`PIYUSHBONDE/finrecon-lakehouse` with custom label `finrecon`. The official runner
+release was downloaded and verified against its published SHA-256 digest.
 
 The workflow selects `[self-hosted, windows, x64, finrecon]`, runs fast checks on
 trusted `main` pushes, and offers manual `fast`/`full` dispatch. It has no pull
@@ -89,17 +89,45 @@ request trigger. It uses a read-only token, disables persisted checkout
 credentials, and pins the official checkout action to a verified full commit.
 There are no deployment or upload steps.
 
-Before activation, publish the repository deliberately and register a dedicated
-Windows x64 runner with label `finrecon`. Use a current runner compatible with
-the pinned checkout action, Python 3.11, and access to the Docker Linux engine.
-Use a separate runner checkout/work directory, not this active development
-workspace. Review code before running it on your machine. The workflow has no
-fallback to a hosted runner; without a matching online runner it stays queued.
+The runner is installed under `pipelines/output/actions-runner`, with its own
+`_work` checkout separate from this active workspace. Installation, credentials,
+launcher logs, and generated reports remain ignored by Git. Registration tokens
+were handled in memory; runner credentials are restricted to the Windows owner,
+SYSTEM, and Administrators. No Windows service was installed.
+
+Start or restart it from the development workspace as the Windows owner:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_ci_runner.ps1
+```
+
+The helper checks Python 3.11 and Docker availability, detects an already-running
+listener, and launches the official runner wrapper in a hidden window with logs.
+It does not modify global Git settings or register another runner. After a PC
+restart or logout, start the runner again and keep Docker Desktop running.
+The helper prints the launcher PID and log path; GitHub's runner/job status is
+the authoritative online result. Stop the listener only after active jobs finish.
+
+For a new machine or clone, register a separate repository runner before using
+the helper; runner credentials are intentionally absent from the published code.
+Use a current runner compatible with the pinned checkout action, Python 3.11,
+and access to Docker's Linux engine. Review trusted code before pushing `main`.
+There is no hosted-runner fallback; without a matching online runner jobs queue.
 
 GitHub documents [runner label matching](https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job)
 and [self-hosted runner operation](https://docs.github.com/en/actions/concepts/runners/self-hosted-runners).
 The chosen configuration uses existing hardware and avoids hosted compute
 usage; ongoing runner maintenance remains the owner's responsibility.
+GitHub's [current billing documentation](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
+lists self-hosted runners as free compute usage. This workflow uses the existing
+PC and local Docker storage; it configures no paid runner or artifact upload.
+
+The initial push workflow completed successfully on November 18 on this runner:
+[GitHub fast validation](https://github.com/PIYUSHBONDE/finrecon-lakehouse/actions/runs/44136367643).
+Its actual runner report recorded 45 tests, no failures/errors, and no skips.
+This is observed GitHub execution of the fast profile; the 19-test compute profile
+is a separate manual `full` dispatch. Do not run a full dispatch alongside a
+direct readiness/Spark verification on this memory-limited host.
 
 ## Verified local result
 
@@ -112,8 +140,8 @@ The missing-Spark preflight also correctly failed instead of reporting success.
 Combined proof:
 `pipelines/output/ci/20261114T052812Z_343c7af3/verification.json`.
 The same directory retains the original fast/compute reports, suite results,
-logs, and live-container isolation inspection. This is observed local CI;
-GitHub registration and execution remain separate pending work.
+logs, and live-container isolation inspection. These November 14 results are
+historical local CI; the GitHub execution above is recorded separately.
 
 The final fast profile was rerun after adding the recursive landing-copy guard;
 its report is `fast_final/ci.json` in that directory. Compute code was unchanged,
