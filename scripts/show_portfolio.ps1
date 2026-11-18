@@ -21,7 +21,7 @@ if ($evidence.end_to_end.payments -le 0 -or
 }
 
 Write-Output 'FinRecon: recorded local validation, not a live health check'
-Write-Output "Measured date: $($evidence.measured_date)"
+Write-Output "End-to-end measured date: $($evidence.measured_date)"
 Write-Output "End-to-end: $($evidence.end_to_end.matched_payments)/$($evidence.end_to_end.payments) payments matched"
 Write-Output "Gateway: $($evidence.end_to_end.gateway_deliveries) deliveries; $($evidence.end_to_end.exact_retries) exact retries"
 Write-Output "Fixture: $($evidence.end_to_end.hot_originals) hot-merchant originals; $($evidence.end_to_end.poison_pills) poison pills; $($evidence.end_to_end.validated_memo_links) memo links"
@@ -29,7 +29,11 @@ Write-Output "Quality: $($evidence.end_to_end.quality_checks) checks; historical
 Write-Output "CI: $($evidence.ci.total_tests) selected tests; unexpected skips: $($evidence.ci.unexpected_skips)"
 Write-Output "Restore: $($evidence.recovery.restored_old_rows) old rows replayed; $($evidence.recovery.new_cdc_rows) new CDC rows ingested"
 Write-Output "Retention loss: expected Spark exit $($evidence.retention_loss.expected_spark_exit); committed Delta unchanged: $($evidence.retention_loss.committed_delta_unchanged)"
+if ($evidence.recovery.measured_date) {
+    Write-Output "Recovery proof date: $($evidence.recovery.measured_date); retention-loss proof date: $($evidence.retention_loss.measured_date)"
+}
 Write-Output "Scale boundary: $($evidence.skew.synthetic_payments) synthetic compute payments; end-to-end correctness fixture remains $($evidence.end_to_end.payments)"
+Write-Output "Synthetic benchmark date: $($evidence.skew.measured_date)"
 Write-Output "Retry timing: $($evidence.end_to_end.retry_clock)"
 Write-Output "Limits: $($evidence.boundaries -join '; ')"
 $dataset = if ($evidence.dataset) { $evidence.dataset } else { 'readiness_20261114' }

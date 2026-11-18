@@ -2,8 +2,10 @@
 
 Use the existing recorded fixture for a short walkthrough. A fresh end-to-end
 verification or full CI run takes longer than ten minutes and belongs before
-the presentation. Recorded results below are from November 14, 2026; they are
-not a live measurement of the reviewer's machine.
+the presentation. Each component in the evidence file records its measurement
+date. The refreshed end-to-end run is from November 18, 2026; the recovery and
+large synthetic benchmark proofs retain their earlier dates. Recorded results
+are not a live measurement of the reviewer's machine.
 
 ## Opening pitch: 30 seconds
 

@@ -40,6 +40,34 @@ SPARK = (
 )
 
 
+def source_files(root=ROOT):
+    """Select Python sources without entering generated output or runner state."""
+    root = Path(root)
+    selected = []
+
+    def fail(error):
+        raise error
+
+    for name in ("data_generator", "pipelines", "operations", "tests"):
+        directory = root / name
+        if not directory.is_dir():
+            raise RuntimeError("Missing CI source directory: " + name)
+        for current, directories, files in os.walk(directory, onerror=fail):
+            directories[:] = sorted(
+                child
+                for child in directories
+                if child not in {"output", "__pycache__", ".git", ".venv", ".venv-ci"}
+            )
+            selected.extend(
+                (Path(current) / file).relative_to(root).as_posix()
+                for file in sorted(files)
+                if file.endswith(".py")
+            )
+    if not selected:
+        raise RuntimeError("CI collected no Python source files")
+    return sorted(selected)
+
+
 def execute_suite(suite, directory):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=False)
@@ -215,7 +243,7 @@ def run_checks(profile, directory):
         require_modules(["yaml"])
         if profile == "fast":
             require_modules(["ruff"])
-            targets = ["data_generator", "pipelines", "operations", "tests"]
+            targets = source_files()
             command("lint", [sys.executable, "-m", "ruff", "check", *targets])
             command(
                 "format", [sys.executable, "-m", "ruff", "format", "--check", *targets]

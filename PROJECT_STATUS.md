@@ -1,6 +1,6 @@
 # FinRecon completion checklist
 
-Status as of 2026-11-15. Measurements below retain their original dates. This distinguishes implemented local behavior from
+Status as of 2026-11-18. Measurements below retain their original dates. This distinguishes implemented local behavior from
 remaining enterprise/platform work. No paid workspace or cloud subscription is
 required for the current implementation.
 
@@ -17,7 +17,7 @@ required for the current implementation.
 | FX | Explicit dated books, INR reporting, decimal rounding/overflow gates, broadcast join | [FX](pipelines/FX.md); synthetic demo quotes, no cross-currency settlement matching |
 | Orchestration and quality | Seven stages plus optional FX, retries, locks, 35 native quality checks | [Operations](pipelines/OPERATIONS.md); Airflow and Soda integrations remain future work |
 | Skew/volume evidence | Synthetic compute through one million payments and two million journal legs | [Measured results](pipelines/BENCHMARK_RESULTS.md); not end-to-end pipeline throughput |
-| CI | Pinned local tools, explicit test inventory, strict no-skip gates, isolated Spark workers | [CI](pipelines/CI.md); 64 selected local checks passed with no skips; GitHub activation remains separate |
+| CI | Pinned local tools, explicit test inventory, strict no-skip gates, isolated Spark workers | [CI](pipelines/CI.md); GitHub full run passed 64 tests; two later fast scanner regressions passed separately, making current selection 66 |
 | Databricks | Portable Spark/Delta logic and documented local substitutes | Auto Loader, Unity Catalog, managed jobs, networking, and Asset Bundles are unvalidated |
 | Recovery | Coordinated physical PostgreSQL/Kafka/Delta snapshots, sparse archives, retained rollback data | [Recovery](operations/RECOVERY.md); isolated restore resumed CDC and ingested exactly six new probe events |
 | Retention failure | Disposable-topic record-loss injection, explicit Spark failure, committed Delta preservation | [Run guide](operations/READY.md); lost unread offsets failed closed without changing committed data |
@@ -37,22 +37,24 @@ required for the current implementation.
    and a reviewed cloud migration/deployment path. These are not silently claimed
    by the local equivalents. Cloud deployment stays deferred under the zero
    cloud budget.
-4. **Repository publication/runner activation:** the architecture walkthrough,
-   interview demo, aggregate evidence, and a separate staged local Git snapshot
-   are prepared. Commit/remote creation, publication, license selection, and
-   dedicated Actions runner activation remain separate. No historical commits
-   are invented. The workflow file alone is not an observed GitHub CI run.
+Repository publication completed on November 17. On November 18 the dedicated
+Windows runner was registered and completed GitHub fast and full validation.
+The fresh 1,000-payment demonstration and all replay checks also completed.
+Run receipts and exact validation scopes are documented in [CI.md](pipelines/CI.md). No historical
+commits are invented, and no project license has been assigned automatically.
 
 ## Inspectable demo evidence
 
 The latest complete proof is
-`pipelines/output/readiness_20261114/readiness.json`: 1,000 payments matched,
+`pipelines/output/readiness_20261118/readiness.json`: 1,000 payments matched,
 50 exact retries retained in Bronze, ten synthetic poison pills explicitly
 corrected from fixture truth, and twenty financially validated memo links.
 All six layer proofs passed again in fresh containers without changing state.
 The eight-stage run passed all 35 quality checks:
-`pipelines/output/readiness_20261114/runs/20261114T050443Z_e4511c99/run.json`.
-This cohort retains 311 unrelated historical open items from shared CDC topics.
+`pipelines/output/readiness_20261118/runs/20261118T035544Z_dde62c54/run.json`.
+This cohort retains 1,311 unrelated historical open items from shared CDC topics.
+The November 14 fixture remains inspectable under `readiness_20261114`; its 311
+historical open items predate the additional synthetic fixture now in shared CDC.
 
 Kafka migration/restore proof is
 `pipelines/output/recovery/kafka_20261114/recovery.json`.

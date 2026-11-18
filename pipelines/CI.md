@@ -15,7 +15,7 @@ powershell -ExecutionPolicy Bypass -File scripts/ci_checks.ps1 -Profile fast -Py
 ```
 
 `fast` runs Ruff lint/format checks, compilation, YAML contracts, CI/workflow
-policy checks, test-inventory coverage, and 45 selected Windows unit tests. It
+policy checks, test-inventory coverage, and 47 selected Windows unit tests. It
 requires no running database, broker, or Spark. The Linux-only lock test is
 covered by the compute profile; it is not silently skipped on Windows.
 
@@ -34,11 +34,18 @@ Three opt-in PostgreSQL tests are deliberately outside CI. They write and clean
 up source rows and require `FINRECON_TEST_POSTGRES_DSN`. Broker/CDC end-to-end
 verifiers are separate live-service proofs. This CI run does not replace them.
 
-The inventory currently accounts for 67 tests: 45 fast, 19 compute, and three
+The inventory currently accounts for 69 tests: 47 fast, 19 compute, and three
 opt-in PostgreSQL. A new test class/method must belong to exactly one configured
 group, preventing accidental omission when tests are added. An empty suite,
 missing dependency, unittest error, failure, or skipped selected test fails CI.
 Expected import skips never substitute for real Spark execution.
+
+Lint, formatting, and compilation use an explicit source-file list. Discovery
+keeps nested Python packages but prunes generated `output`, cache, and virtual
+environment directories before entering them. This matters in the development
+workspace: installed runner files are generated state, not project sources.
+Missing source directories and an empty source list fail CI. Two regression
+cases were added after runner installation exposed this local scanning issue.
 
 ## Isolation and reports
 
@@ -126,7 +133,16 @@ The initial push workflow completed successfully on November 18 on this runner:
 [GitHub fast validation](https://github.com/PIYUSHBONDE/finrecon-lakehouse/actions/runs/44136367643).
 Its actual runner report recorded 45 tests, no failures/errors, and no skips.
 This is observed GitHub execution of the fast profile; the 19-test compute profile
-is a separate manual `full` dispatch. Do not run a full dispatch alongside a
+is a separate manual `full` dispatch. That full dispatch also completed:
+[GitHub full validation](https://github.com/PIYUSHBONDE/finrecon-lakehouse/actions/runs/44235372671)
+ran 45 fast and 19 compute tests on commit `807b6c5`, with no selected skips.
+The later source-discovery fix adds two fast regression cases, bringing current
+selection to 47 fast plus 19 compute. Final validation combines the updated fast
+checks with those unchanged compute checks; all business/Spark Python sources
+and the compute-controller branch were verified unchanged. The historical full
+run is not relabeled as a 66-test run.
+
+Do not run a full dispatch alongside a
 direct readiness/Spark verification on this memory-limited host.
 
 ## Verified local result

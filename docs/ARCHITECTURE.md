@@ -81,10 +81,10 @@ protect business effects within the documented scope.
 
 ## What the measurements show
 
-The November 14, 2026 end-to-end fixture has 1,000 payments, 1,050 gateway
+The November 18, 2026 end-to-end fixture has 1,000 payments, 1,050 gateway
 deliveries, 4,000 correlated CDC events, and 2,000 balanced journal legs. All
 1,000 match after ten explicit synthetic corrections and twenty validated memo
-links. The shared CDC history retains 311 unrelated open items. Retry timing in
+links. The shared CDC history retains 1,311 unrelated open items. Retry timing in
 this verifier uses a virtual clock; transport and PostgreSQL writes are real.
 
 The separate synthetic skew experiment reaches one million payments and two

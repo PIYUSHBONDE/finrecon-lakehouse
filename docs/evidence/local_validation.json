@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "record_type": "historical_local_validation",
-  "measured_date": "2026-11-14",
-  "prepared_at": "2026-11-15T09:53:26.597095+00:00",
+  "measured_date": "2026-11-18",
+  "prepared_at": "2026-11-18T04:37:23.894780+00:00",
   "scope": "Single-host local synthetic portfolio validation; not production certification.",
   "end_to_end": {
     "passed": true,
@@ -16,7 +16,7 @@
     "poison_pills": 10,
     "correction_policy": "Explicit synthetic fixture truth; no automatic financial repair",
     "validated_memo_links": 20,
-    "historical_open_items_retained": 311,
+    "historical_open_items_retained": 1311,
     "quality_checks": 35,
     "pipeline_stages": 8,
     "fresh_process_checks": {
@@ -30,19 +30,25 @@
       "no_fixture_open_invoices": true,
       "decimal_oracle": true
     },
-    "retry_clock": "virtual; PostgreSQL and Kafka transport real"
+    "retry_clock": "virtual; PostgreSQL and Kafka transport real",
+    "measured_date": "2026-11-18"
   },
   "ci": {
     "passed": true,
-    "fast_tests": 45,
+    "measured_date": "2026-11-18",
+    "fast_tests": 47,
     "compute_tests": 19,
-    "total_tests": 64,
+    "total_tests": 66,
     "unexpected_skips": 0,
     "compute_suites": 9,
     "source_mount_read_only": true,
     "isolated_volumes_verified": true,
     "opt_in_postgres_tests_outside_ci": 3,
-    "github_workflow": "prepared_not_activated"
+    "github_workflow": "active_self_hosted",
+    "github_full_run_url": "https://github.com/PIYUSHBONDE/finrecon-lakehouse/actions/runs/44235372671",
+    "github_full_commit": "807b6c598dea48aa2887ed9a4910d79e8e14a56e",
+    "github_full_run_tests": 64,
+    "validation_scope": "Final 47 fast tests include two new source-scanner regressions; 19 unchanged compute tests come from the successful 64-test full GitHub run. This is a combined validation matrix, not one 66-test historical workflow."
   },
   "recovery": {
     "passed": true,
@@ -50,18 +56,21 @@
     "new_cdc_rows": 6,
     "probe_absent_from_original": true,
     "isolation": "private internal Docker network, no published service ports",
-    "scope": "Physical snapshots and resumed CDC/Bronze; single host"
+    "scope": "Physical snapshots and resumed CDC/Bronze; single host",
+    "measured_date": "2026-11-14"
   },
   "retention_loss": {
     "passed": true,
     "expected_spark_exit": 1,
     "committed_delta_unchanged": true,
-    "target": "New disposable probe topic only"
+    "target": "New disposable probe topic only",
+    "measured_date": "2026-11-14"
   },
   "fx": {
     "synthetic_rates_only": true,
     "independent_decimal_oracle_passed": true,
-    "cross_currency_settlement": false
+    "cross_currency_settlement": false,
+    "measured_date": "2026-11-18"
   },
   "skew": {
     "measured_date": "2026-11-13",
@@ -81,16 +90,16 @@
     "FX demonstration quotes are synthetic",
     "Databricks/Airflow/Soda integrations unvalidated or unimplemented",
     "Hot watermark deduplication not implemented; seven-day durable MERGE is active",
-    "No GitHub publication or hosted CI execution claimed"
+    "GitHub workflows execute on the local Windows runner; the PC and Docker must be running"
   ],
   "proof_sources": {
     "readiness": {
-      "path": "pipelines/output/readiness_20261114/readiness.json",
-      "sha256": "467d0a4e05988ff42e38cdb333399950d6deb64aa22e8609be9276eee27c92aa"
+      "path": "pipelines/output/readiness_20261118/readiness.json",
+      "sha256": "3e7506993fbead160c7d36257b1cd154dc576a370244a2af7a322a750f3be1f3"
     },
     "ci": {
-      "path": "pipelines/output/ci/20261114T052812Z_343c7af3/verification.json",
-      "sha256": "a06204d96b35e37d93097bc208c4e4604552ca264751ef330487fbc3486a238c"
+      "path": "pipelines/output/handover_20261118/local_fast_final/ci.json",
+      "sha256": "d4b6e00aee32b47ee7889cf21562b56dca73c9677e84f2db7f3bf413d833e4cc"
     },
     "coordinated_restore": {
       "path": "pipelines/output/recovery/stack_20261114_retry/stack_recovery.json",
@@ -101,32 +110,41 @@
       "sha256": "9e3d48f2aec7eb7cfbdcb5af4efb8dd425c3fd7fcf1623ead0b04ddd84310100"
     },
     "memo_validation": {
-      "path": "pipelines/output/readiness_20261114/exception_verification.json",
-      "sha256": "a4ed3cc3ced526e15655b8d25d81fcdecb092ac1a04b0c48aa3ceee3461d02fe"
+      "path": "pipelines/output/readiness_20261118/exception_verification.json",
+      "sha256": "0350dc44c22c44ab6ebb802494a51e581d3a7906de8795501d15ebd921805f31"
     },
     "fx": {
-      "path": "pipelines/output/readiness_20261114/fx_verification.json",
-      "sha256": "3b5fec2936dbe630cebdd342252816fdba669e15d97b2b99e5ce6c3b2762da34"
+      "path": "pipelines/output/readiness_20261118/fx_verification.json",
+      "sha256": "938ff91eebed7112e32223a6ec9e7050604b1834cb7ac9ab4b080e30c80a5a77"
     },
     "orchestration": {
-      "path": "pipelines/output/readiness_20261114/runs/20261114T050443Z_e4511c99/run.json",
-      "sha256": "ebad27d3980e0fb7243a04945c7a72376309a8f6c32ac93eb632867e47c1f7b4"
+      "path": "pipelines/output/readiness_20261118/runs/20261118T035544Z_dde62c54/run.json",
+      "sha256": "cf406022ef1d470c6c84e0cee9f8333228245de927340ad17790e67e2e9ea2e1"
     },
     "synthetic_skew": {
       "path": "pipelines/output/benchmarks/20261113T070436Z_ceffe63a/benchmark.json",
       "sha256": "554fd7c3e2469b102983ad42037ddca91836895dba9a650bd924c97d8e97f623"
     },
     "correlated_sources": {
-      "path": "data_generator/output/correlated_5326129a/live/verification.json",
-      "sha256": "971aa63f5ab753e01eb233bfc173110e7990fa415ce3dc8bb8ef10373d30589a"
+      "path": "data_generator/output/correlated_165ac770/live/verification.json",
+      "sha256": "26efcb235c3eed12f77b8f3557d55045a8fe19930f6bd669fb68622ed90fa96a"
     },
     "silver_quality": {
-      "path": "pipelines/output/readiness_20261114/runs/20261114T050443Z_e4511c99/silver_quality.json",
-      "sha256": "f4e5459e8bde1a5ae80177d907093d82cc5b0edeec8d76630a92d172dcaf640a"
+      "path": "pipelines/output/readiness_20261118/runs/20261118T035544Z_dde62c54/silver_quality.json",
+      "sha256": "a2ed3798cf81950f08ad7664d864993ad29782267f7462b8d1ccd726cf05f6bd"
     },
     "gold_quality": {
-      "path": "pipelines/output/readiness_20261114/runs/20261114T050443Z_e4511c99/gold_quality.json",
-      "sha256": "55f45452da9690cef5f5f92195ddeaebd5b4c8221eb620e8b9c7cac56eaf4819"
+      "path": "pipelines/output/readiness_20261118/runs/20261118T035544Z_dde62c54/gold_quality.json",
+      "sha256": "52fb299389f43c9bf06ce0c4e0e49752351d67e7b4e26c00b31ddfe753bde2a7"
+    },
+    "github_full": {
+      "path": "pipelines/output/handover_20261118/github_full.json",
+      "sha256": "a92a8e7870760abcd9aadcc014aeed132d6986d22c95d1b207e8e3ae4037cd00"
+    },
+    "validation_scope": {
+      "path": "pipelines/output/handover_20261118/validation_scope.json",
+      "sha256": "2825dcbbb2c55e5c647d770236f9d493427f96ef4a30df6411a5587ae9d0a08f"
     }
-  }
+  },
+  "dataset": "readiness_20261118"
 }
